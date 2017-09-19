@@ -281,7 +281,7 @@ namespace Nez.Tiled
 		/// <param name="position">Position.</param>
 		/// <param name="layerDepth">Layer depth.</param>
 		/// <param name="cameraClipBounds">Camera clip bounds.</param>
-		public void draw( Batcher batcher, Vector2 position, float layerDepth, RectangleF cameraClipBounds )
+		public void draw( Batcher batcher, Vector2 position, float layerDepth, RectangleF cameraClipBounds, float scale = 1)
 		{
 			// render any visible image or tile layer
 			foreach( var layer in layers )
@@ -289,7 +289,7 @@ namespace Nez.Tiled
 				if( !layer.visible )
 					continue;
 
-				layer.draw( batcher, position, layerDepth, cameraClipBounds );
+				layer.draw( batcher, position, layerDepth, cameraClipBounds, scale );
 			}
 		}
 
@@ -359,9 +359,9 @@ namespace Nez.Tiled
 		/// </summary>
 		/// <returns>The to tile position x.</returns>
 		/// <param name="x">The x coordinate.</param>
-		public int worldToTilePositionX( float x, bool clampToTilemapBounds = true )
+		public int worldToTilePositionX( float x, bool clampToTilemapBounds = true, float scale = 1 )
 		{
-			var tileX = Mathf.fastFloorToInt( x / tileWidth );
+			var tileX = Mathf.fastFloorToInt( x / tileWidth / scale );
 			if( !clampToTilemapBounds )
 				return tileX;
 			return Mathf.clamp( tileX, 0, width - 1 );
@@ -373,9 +373,9 @@ namespace Nez.Tiled
 		/// </summary>
 		/// <returns>The to tile position y.</returns>
 		/// <param name="y">The y coordinate.</param>
-		public int worldToTilePositionY( float y, bool clampToTilemapBounds = true )
+		public int worldToTilePositionY( float y, bool clampToTilemapBounds = true, float scale = 1)
 		{
-			var tileY = Mathf.fastFloorToInt( y / tileHeight );
+			var tileY = Mathf.fastFloorToInt( y / tileHeight / scale );
 			if( !clampToTilemapBounds )
 				return tileY;
 			return Mathf.clamp( tileY, 0, height - 1 );

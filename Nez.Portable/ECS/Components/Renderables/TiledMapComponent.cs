@@ -17,8 +17,10 @@ namespace Nez
 		/// </summary>
 		public int[] layerIndicesToRender;
 
-		public override float width { get { return tiledMap.width * tiledMap.tileWidth; } }
-		public override float height { get { return tiledMap.height * tiledMap.tileHeight; } }
+	    public float scale = 1;
+
+		public override float width { get { return tiledMap.width * tiledMap.tileWidth * transform.scale.X; } }
+		public override float height { get { return tiledMap.height * tiledMap.tileHeight * transform.scale.Y; } }
 
 		public TiledTileLayer collisionLayer;
 
@@ -144,14 +146,14 @@ namespace Nez
 		{
 			if( layerIndicesToRender == null )
 			{
-				tiledMap.draw( graphics.batcher, entity.transform.position + _localOffset, layerDepth, camera.bounds );
+				tiledMap.draw( graphics.batcher, entity.transform.position + _localOffset, layerDepth, camera.bounds, scale);
 			}
 			else
 			{
 				for( var i = 0; i < tiledMap.layers.Count; i++ )
 				{
 					if( tiledMap.layers[i].visible && layerIndicesToRender.contains( i ) )
-						tiledMap.layers[i].draw( graphics.batcher, entity.transform.position + _localOffset, layerDepth, camera.bounds );
+						tiledMap.layers[i].draw( graphics.batcher, entity.transform.position + _localOffset, layerDepth, camera.bounds, scale);
 				}
 			}
 		}

@@ -45,8 +45,7 @@ namespace Nez.Tiled
 			internal SubpixelFloat _movementRemainderX, _movementRemainderY;
 			internal TiledTile _lastGroundTile;
 
-
-			public void clearLastGroundTile()
+		    public void clearLastGroundTile()
 			{
 				_lastGroundTile = null;
 			}
@@ -63,7 +62,7 @@ namespace Nez.Tiled
 			/// resets collision state and does sub-pixel movement calculations
 			/// </summary>
 			/// <param name="motion">Motion.</param>
-			public void reset( ref Vector2 motion )
+			public void reset( ref Vector2 motion, bool useGravity )
 			{
 				if( motion.X == 0 )
 					right = left = false;
@@ -79,7 +78,7 @@ namespace Nez.Tiled
 				_movementRemainderY.update( ref motion.Y );
 
 				// due to subpixel movement we might end up with 0 gravity when we really want there to be at least 1 pixel so slopes can work
-				if( below && motion.Y == 0 && _movementRemainderY.remainder > 0 )
+				if( useGravity && (below && motion.Y == 0 && _movementRemainderY.remainder > 0 ))
 				{
 					motion.Y = 1;
 					_movementRemainderY.reset();
@@ -105,10 +104,15 @@ namespace Nez.Tiled
 		/// </summary>
 		public int colliderVerticalInset = 6;
 
-		/// <summary>
-		/// the TiledTileLayer used for collision checks
-		/// </summary>
-		public readonly TiledTileLayer collisionLayer;
+        /// <summary>
+        /// Whether to use and calculate for gravity or not
+        /// </summary>
+	    public bool UseGravity { get; set; }
+
+        /// <summary>
+        /// the TiledTileLayer used for collision checks
+        /// </summary>
+        public readonly TiledTileLayer collisionLayer;
 
 		/// <summary>
 		/// the TiledMap that contains collisionLayer
@@ -134,12 +138,12 @@ namespace Nez.Tiled
 		}
 
 
-		/// <summary>
+	    /// <summary>
 		/// moves the Entity taking into account the tiled map
 		/// </summary>
 		/// <param name="motion">Motion.</param>
 		/// <param name="boxCollider">Box collider.</param>
-		public void move( Vector2 motion, BoxCollider boxCollider, CollisionState collisionState )
+		public void move( Vector2 motion, BoxCollider boxCollider, CollisionState collisionState)
 		{
 			// test for collisions then move the Entity
 			testCollisions( ref motion, boxCollider.bounds, collisionState );
@@ -158,7 +162,7 @@ namespace Nez.Tiled
 			collisionState.wasGroundedLastFrame = collisionState.below;
 
 			// reset our collisions state
-			collisionState.reset( ref motion );
+			collisionState.reset( ref motion, UseGravity );
 
 			// reset rounded motion for us while dealing with subpixel movement so fetch the rounded values to use for our actual detection
 			var motionX = (int)motion.X;

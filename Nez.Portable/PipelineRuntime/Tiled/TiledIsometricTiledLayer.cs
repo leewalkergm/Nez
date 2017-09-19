@@ -56,7 +56,7 @@ namespace Nez.Tiled
 		}
 
 
-		public override void draw( Batcher batcher, Vector2 position, float layerDepth, RectangleF cameraClipBounds )
+		public override void draw( Batcher batcher, Vector2 position, float layerDepth, RectangleF cameraClipBounds, float scale = 1 )
 		{
 			// offset render position by the layer offset, used for isometric layer depth
 			position += offset;
@@ -98,7 +98,7 @@ namespace Nez.Tiled
 							continue;
 					}
 
-					drawTile( batcher, position, layerDepth, x, y, 1 );
+					drawTile( batcher, position, layerDepth, x, y, scale );
 				}
 			}
 		}
